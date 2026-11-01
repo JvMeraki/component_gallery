@@ -1,0 +1,25 @@
+---
+import type { GetStaticPaths } from "astro";
+import { LOCALES } from "../../i18n/locales";
+
+export const getStaticPaths = (() => {
+    return LOCALES.map((lang) => ({
+        params: { lang },
+    }));
+}) satisfies GetStaticPaths;
+
+const { lang } = Astro.params;
+---
+
+<html lang={lang}>
+<head>
+    <meta charset="UTF-8" />
+    <title>{lang === 'es' ? 'Inicio' : 'Home'}</title>
+</head>
+<body>
+<h1>{lang === 'es' ? 'Galería' : 'Gallery'}</h1>
+<a href={`/${lang}/docs/`}>
+    {lang === 'es' ? 'Ver Documentación 📚' : 'View Documentation 📚'}
+</a>
+</body>
+</html>

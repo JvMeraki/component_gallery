@@ -1,0 +1,40 @@
+---
+import path from 'node:path';
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import { getCollection, render } from 'astro:content';
+
+export const getStaticPaths = (async () => {
+    const allComponents = await getCollection('components');
+
+    return allComponents.map((entry) => ({
+        params: {
+            lang: entry.data.lang,
+            slug: path.posix.dirname(entry.id)
+        },
+        props: { entry },
+    }));
+}) satisfies  GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<html lang={entry.data.lang}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{entry.data.title} | UI Gallery </title>
+        <meta name="description" content={entry.data.description} />
+    </head>
+    <body>
+        <main>
+            <h1>{entry.data.title}</h1>
+            <p>{entry.data.description}</p>
+            <article>
+                <Content />
+            </article>
+        </main>
+    </body>
+</html>
